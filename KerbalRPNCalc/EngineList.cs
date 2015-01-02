@@ -13,17 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace KerbalRPNCalc
 {
-    internal class PiOperation : IOperation
+    internal class EngineList : IEnumerable<Engine>
     {
-        public Stack<double> Calculate(Stack<double> stack)
+        private readonly List<Engine> _engines;
+
+        public EngineList()
         {
-            stack.Push(Math.PI);
-            return stack;
+            _engines = Resources.FindObjectsOfTypeAll<ModuleEngines>()
+                .Select(EngineFactory.Normalise)
+                .Union(Resources.FindObjectsOfTypeAll<ModuleEnginesFX>()
+                    .Select(EngineFactory.Normalise)).ToList();
+        }
+
+        public IEnumerator<Engine> GetEnumerator()
+        {
+            return _engines.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

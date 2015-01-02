@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using UnityEngine;
 
 namespace KerbalRPNCalc
@@ -24,10 +25,12 @@ namespace KerbalRPNCalc
         private Rect _screenRect = new Rect(0, 0, 200, 0);
         private bool _isVisible;
         private readonly CalculatorViewModel _calculatorViewModel = new CalculatorViewModel();
+        private EngineSelector _engineSelector;
 
         public void Awake()
         {
             GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
+            _engineSelector = gameObject.AddComponent<EngineSelector>();
         }
 
         public void OnDestroy()
@@ -35,9 +38,7 @@ namespace KerbalRPNCalc
             GameEvents.onGUIApplicationLauncherReady.Remove(AddButton);
 
             if (_button != null)
-            {
                 ApplicationLauncher.Instance.RemoveModApplication(_button);
-            }
         }
 
         private void AddButton()
@@ -58,20 +59,39 @@ namespace KerbalRPNCalc
             _screenRect = GUILayout.Window(GetInstanceID(), _screenRect, id =>
             {
                 GUILayout.BeginVertical();
-                var calculatorScreenStyle = HighLogic.Skin.textField;
-                calculatorScreenStyle.alignment = TextAnchor.MiddleRight;
-                _calculatorViewModel.T = GUILayout.TextField(_calculatorViewModel.T, calculatorScreenStyle);
-                _calculatorViewModel.Z = GUILayout.TextField(_calculatorViewModel.Z, calculatorScreenStyle);
-                _calculatorViewModel.Y = GUILayout.TextField(_calculatorViewModel.Y, calculatorScreenStyle);
-                _calculatorViewModel.X = GUILayout.TextField(_calculatorViewModel.X, calculatorScreenStyle);
+                _calculatorViewModel.T = CalculatorDisplay("T:", _calculatorViewModel.T);
+                _calculatorViewModel.Z = CalculatorDisplay("Z:", _calculatorViewModel.Z);
+                _calculatorViewModel.Y = CalculatorDisplay("Y:", _calculatorViewModel.Y);
+                _calculatorViewModel.X = CalculatorDisplay("X:", _calculatorViewModel.X);
                 GUILayout.EndVertical();
-
+                BuildEngineInfoButton();
                 BuildOperations();
-
                 BuildNumPad();
-
                 GUI.DragWindow();
             }, "Kerbal RPN Calculator", HighLogic.Skin.window);
+        }
+
+        private static string CalculatorDisplay(string label, string value)
+        {
+            var calculatorScreenStyle = HighLogic.Skin.textField;
+            calculatorScreenStyle.alignment = TextAnchor.MiddleRight;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label, HighLogic.Skin.label);
+            var textFieldValue = GUILayout.TextField(value, calculatorScreenStyle);
+            GUILayout.EndHorizontal();
+
+            return textFieldValue;
+        }
+
+        private void BuildEngineInfoButton()
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Engine Information", HighLogic.Skin.button))
+            {
+                _engineSelector.Show(value => _calculatorViewModel.Operate(new ValueOperation(value)));
+            }
+            GUILayout.EndHorizontal();
         }
 
         private void BuildOperations()
@@ -79,7 +99,7 @@ namespace KerbalRPNCalc
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             OperationButton("ln", new LnOperation());
-            OperationButton("PI", new PiOperation());
+            OperationButton("PI", new ValueOperation(Math.PI));
             OperationButton("y^x", new PowerOperation());
             OperationButton("SWAP", new SwapOperation());
             GUILayout.EndHorizontal();
