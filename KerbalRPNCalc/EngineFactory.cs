@@ -13,18 +13,50 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+using UnityEngine;
+
 namespace KerbalRPNCalc
 {
     internal class EngineFactory
     {
         public static Engine Normalise(ModuleEngines engine)
         {
-            return new Engine(Part.FromGO(engine.gameObject).partInfo.title, engine.atmosphereCurve.Evaluate(1.0f));
+            return Engine.CreateEngineWithName(Part.FromGO(engine.gameObject).partInfo.title)
+                .WithMode(x =>
+                {
+                    x.SeaLevelISP = engine.atmosphereCurve.Evaluate(1.0f);
+                    x.VacuumISP = engine.atmosphereCurve.Evaluate(0.0f);
+                });
         }
 
         public static Engine Normalise(ModuleEnginesFX engine)
         {
-            return new Engine(Part.FromGO(engine.gameObject).partInfo.title, engine.atmosphereCurve.Evaluate(1.0f));
+            return Engine.CreateEngineWithName(Part.FromGO(engine.gameObject).partInfo.title)
+                .WithMode(x =>
+                {
+                    x.SeaLevelISP = engine.atmosphereCurve.Evaluate(1.0f);
+                    x.VacuumISP = engine.atmosphereCurve.Evaluate(0.0f);
+                });
+        }
+
+        public static Engine Normalise(MultiModeEngine engine)
+        {
+            var engines = Resources.FindObjectsOfTypeAll<ModuleEnginesFX>()
+                .Where(e => e.engineID == engine.primaryEngineID || e.engineID == engine.secondaryEngineID);
+
+            var builder = Engine.CreateEngineWithName(Part.FromGO(engine.gameObject).partInfo.title);
+            foreach (var engineMode in engines)
+            {
+                builder = builder.WithMode(mode =>
+                {
+                    mode.Name = engineMode.engineID;
+                    mode.SeaLevelISP = engineMode.atmosphereCurve.Evaluate(1.0f);
+                    mode.VacuumISP = engineMode.atmosphereCurve.Evaluate(0.0f);
+                });
+            }
+
+            return builder;
         }
     }
 }

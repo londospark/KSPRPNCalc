@@ -13,17 +13,56 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+
 namespace KerbalRPNCalc
 {
     internal class Engine
     {
         public string Name { get; private set; }
-        public float ISP { get; private set; }
+        public List<Mode> Modes { get; private set; }
 
-        public Engine(string name, float isp)
+        private Engine(string name, List<Mode> modes)
         {
             Name = name;
-            ISP = isp;
+            Modes = modes;
+        }
+
+        public static Builder CreateEngineWithName(string name)
+        {
+            return new Builder(name);
+        }
+
+        internal class Builder
+        {
+            private readonly string _engineName;
+            private readonly List<Mode> _modes = new List<Mode>(); 
+
+            public Builder(string engineName)
+            {
+                _engineName = engineName;
+            }
+
+            public Builder WithMode(Action<Mode> modeMaker)
+            {
+                var mode = new Mode();
+                modeMaker(mode);
+                _modes.Add(mode);
+                return this;
+            }
+
+            public static implicit operator Engine(Builder builder)
+            {
+                return new Engine(builder._engineName, builder._modes);
+            }
+        }
+
+        internal class Mode
+        {
+            public string Name { get; internal set; }
+            public float SeaLevelISP { get; internal set; }
+            public float VacuumISP { get; internal set; }
         }
     }
 }

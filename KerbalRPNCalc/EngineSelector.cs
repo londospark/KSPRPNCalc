@@ -14,6 +14,7 @@
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace KerbalRPNCalc
@@ -22,9 +23,10 @@ namespace KerbalRPNCalc
     internal class EngineSelector : MonoBehaviour
     {
         private bool _visible = false;
-        private Rect _screenRect = new Rect(0, 0, 300, 0);
+        private Rect _screenRect = new Rect(0, 0, 400, 500);
         private readonly EngineList _engines = new EngineList();
         private Action<double> _callback;
+        private Vector2 _scrollPosition = new Vector2(0, 0);
 
         public void OnGUI()
         {
@@ -33,18 +35,28 @@ namespace KerbalRPNCalc
 
             _screenRect = GUILayout.Window(GetInstanceID(), _screenRect, id =>
             {
+                _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, HighLogic.Skin.scrollView);
                 GUILayout.BeginVertical();
 
-                foreach(var engine in _engines)
+                foreach(var engine in _engines.OrderBy(x => x.Name))
                 {
-                    if (GUILayout.Button(engine.Name + ": " + engine.ISP, HighLogic.Skin.button))
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(engine.Name + " (Modes: " + engine.Modes.Count + ")", HighLogic.Skin.label, GUILayout.ExpandWidth(true));
+                    if (GUILayout.Button("Sea Level", HighLogic.Skin.button, GUILayout.Width(80.0f)))
                     {
-                        _callback(engine.ISP);
+                        _callback(engine.Modes.First().SeaLevelISP);
                         Hide();
                     }
+                    if (GUILayout.Button("Space", HighLogic.Skin.button, GUILayout.Width(80.0f)))
+                    {
+                        _callback(engine.Modes.First().VacuumISP);
+                        Hide();
+                    }
+                    GUILayout.EndHorizontal();
                 }
                     
                 GUILayout.EndVertical();
+                GUILayout.EndScrollView();
                 GUI.DragWindow();
             }, "Engine Information Finderator", HighLogic.Skin.window);
         }

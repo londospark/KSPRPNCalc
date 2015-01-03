@@ -29,6 +29,10 @@ namespace KerbalRPNCalc
             _engines = Resources.FindObjectsOfTypeAll<ModuleEngines>()
                 .Select(EngineFactory.Normalise)
                 .Union(Resources.FindObjectsOfTypeAll<ModuleEnginesFX>()
+                    .Select(EngineFactory.Normalise))
+                .Where(x => !Resources.FindObjectsOfTypeAll<MultiModeEngine>()
+                    .Select(EngineFactory.Normalise).Select(y => y.Name).Contains(x.Name))
+                .Union(Resources.FindObjectsOfTypeAll<MultiModeEngine>()
                     .Select(EngineFactory.Normalise)).ToList();
         }
 
