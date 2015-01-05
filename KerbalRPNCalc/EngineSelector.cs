@@ -14,6 +14,7 @@
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -23,8 +24,8 @@ namespace KerbalRPNCalc
     internal class EngineSelector : MonoBehaviour
     {
         private bool _visible = false;
-        private Rect _screenRect = new Rect(0, 0, 400, 500);
-        private readonly EngineList _engines = new EngineList();
+        private Rect _screenRect = new Rect(0, 0, 600, 350);
+        private readonly EngineModes _engineModes = new EngineModes();
         private Action<double> _callback;
         private Vector2 _scrollPosition = new Vector2(0, 0);
 
@@ -38,18 +39,18 @@ namespace KerbalRPNCalc
                 _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, HighLogic.Skin.scrollView);
                 GUILayout.BeginVertical();
 
-                foreach(var engine in _engines.OrderBy(x => x.Name))
+                foreach(var engineMode in _engineModes)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(engine.Name + " (Modes: " + engine.Modes.Count + ")", HighLogic.Skin.label, GUILayout.ExpandWidth(true));
+                    GUILayout.Label(engineMode.Engine.Name + " " + engineMode.Mode.Name, HighLogic.Skin.label, GUILayout.ExpandWidth(true));
                     if (GUILayout.Button("Sea Level", HighLogic.Skin.button, GUILayout.Width(80.0f)))
                     {
-                        _callback(engine.Modes.First().SeaLevelISP);
+                        _callback(engineMode.Mode.SeaLevelISP);
                         Hide();
                     }
                     if (GUILayout.Button("Space", HighLogic.Skin.button, GUILayout.Width(80.0f)))
                     {
-                        _callback(engine.Modes.First().VacuumISP);
+                        _callback(engineMode.Mode.VacuumISP);
                         Hide();
                     }
                     GUILayout.EndHorizontal();

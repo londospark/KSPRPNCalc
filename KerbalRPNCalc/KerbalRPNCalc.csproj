@@ -47,6 +47,8 @@
     <Compile Include="Engine.cs" />
     <Compile Include="EngineFactory.cs" />
     <Compile Include="EngineList.cs" />
+    <Compile Include="EngineMode.cs" />
+    <Compile Include="EngineModes.cs" />
     <Compile Include="EngineSelector.cs" />
     <Compile Include="IOperation.cs" />
     <Compile Include="LnOperation.cs" />

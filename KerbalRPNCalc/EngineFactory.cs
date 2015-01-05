@@ -14,6 +14,7 @@
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace KerbalRPNCalc
@@ -50,7 +51,7 @@ namespace KerbalRPNCalc
             {
                 builder = builder.WithMode(mode =>
                 {
-                    mode.Name = engineMode.engineID;
+                    mode.Name = Regex.Replace(engineMode.engineID, "([a-z])([A-Z])", "$1 $2");
                     mode.SeaLevelISP = engineMode.atmosphereCurve.Evaluate(1.0f);
                     mode.VacuumISP = engineMode.atmosphereCurve.Evaluate(0.0f);
                 });
