@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace KerbalRPNCalc.Operations
 {
-    internal class ExpOperation : IOperation
+    internal class Exp : IOperation
     {
         public Stack<double> Calculate(Stack<double> stack)
         {

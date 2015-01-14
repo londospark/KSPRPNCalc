@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace KerbalRPNCalc.Operations
 {
-    internal class SubtractOperation : IOperation
+    internal class Subtract : IOperation
     {
         public Stack<double> Calculate(Stack<double> stack)
         {

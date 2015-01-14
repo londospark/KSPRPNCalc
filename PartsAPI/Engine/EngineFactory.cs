@@ -17,11 +17,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace KerbalRPNCalc.PartsAPI
+namespace PartsAPI.Engine
 {
     internal class EngineFactory
     {
-        public static Engine Normalise(ModuleEngines engine)
+        internal static Engine Normalise(ModuleEngines engine)
         {
             return Engine.CreateEngineWithName(Part.FromGO(engine.gameObject).partInfo.title)
                 .WithMode(x =>
@@ -31,7 +31,7 @@ namespace KerbalRPNCalc.PartsAPI
                 });
         }
 
-        public static Engine Normalise(ModuleEnginesFX engine)
+        internal static Engine Normalise(ModuleEnginesFX engine)
         {
             return Engine.CreateEngineWithName(Part.FromGO(engine.gameObject).partInfo.title)
                 .WithMode(x =>
@@ -41,7 +41,7 @@ namespace KerbalRPNCalc.PartsAPI
                 });
         }
 
-        public static Engine Normalise(MultiModeEngine engine)
+        internal static Engine Normalise(MultiModeEngine engine)
         {
             var engines = Resources.FindObjectsOfTypeAll<ModuleEnginesFX>()
                 .Where(e => e.engineID == engine.primaryEngineID || e.engineID == engine.secondaryEngineID);

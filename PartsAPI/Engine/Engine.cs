@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace KerbalRPNCalc.PartsAPI
+namespace PartsAPI.Engine
 {
-    internal class Engine
+    public class Engine
     {
         public string Name { get; private set; }
         public List<Mode> Modes { get; private set; }
@@ -29,7 +29,7 @@ namespace KerbalRPNCalc.PartsAPI
             Modes = modes;
         }
 
-        public static Builder CreateEngineWithName(string name)
+        internal static Builder CreateEngineWithName(string name)
         {
             return new Builder(name);
         }
@@ -58,7 +58,7 @@ namespace KerbalRPNCalc.PartsAPI
             }
         }
 
-        internal class Mode
+        public class Mode
         {
             public string Name { get; internal set; }
             public float SeaLevelISP { get; internal set; }

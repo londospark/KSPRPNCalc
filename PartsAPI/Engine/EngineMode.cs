@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
-namespace KerbalRPNCalc.PartsAPI
+namespace PartsAPI.Engine
 {
-    internal class EngineMode
+    public class EngineMode
     {
         private readonly Engine _engine;
         private readonly Engine.Mode _mode;
 
-        public EngineMode(Engine engine, Engine.Mode mode)
+        internal EngineMode(Engine engine, Engine.Mode mode)
         {
             _engine = engine;
             _mode = mode;

@@ -16,29 +16,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
-namespace KerbalRPNCalc.PartsAPI
+namespace PartsAPI.Engine
 {
-    internal class EngineList : IEnumerable<Engine>
+    public class EngineModes : IEnumerable<EngineMode>
     {
-        private readonly List<Engine> _engines;
+        private readonly List<EngineMode> _engineModes;
 
-        public EngineList()
+        public EngineModes() :
+            this(new EngineList())
         {
-            _engines = Resources.FindObjectsOfTypeAll<ModuleEngines>()
-                .Select(EngineFactory.Normalise)
-                .Union(Resources.FindObjectsOfTypeAll<ModuleEnginesFX>()
-                    .Select(EngineFactory.Normalise))
-                .Where(x => !Resources.FindObjectsOfTypeAll<MultiModeEngine>()
-                    .Select(EngineFactory.Normalise).Select(y => y.Name).Contains(x.Name))
-                .Union(Resources.FindObjectsOfTypeAll<MultiModeEngine>()
-                    .Select(EngineFactory.Normalise)).ToList();
         }
 
-        public IEnumerator<Engine> GetEnumerator()
+        internal EngineModes(IEnumerable<Engine> engines)
         {
-            return _engines.GetEnumerator();
+            _engineModes = engines.OrderBy(x => x.Name)
+                .SelectMany(engine => engine.Modes, (engine, mode) => new EngineMode(engine, mode)).ToList();
+        }
+
+        public IEnumerator<EngineMode> GetEnumerator()
+        {
+            return _engineModes.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
