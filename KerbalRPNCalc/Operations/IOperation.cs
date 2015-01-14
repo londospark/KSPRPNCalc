@@ -1,4 +1,4 @@
-﻿// This file is part of KerbalRPNCalc.
+// This file is part of KerbalRPNCalc.
 // 
 // KerbalRPNCalc is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,27 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
-namespace KerbalRPNCalc
+using System.Collections.Generic;
+
+namespace KerbalRPNCalc.Operations
 {
-    internal class EngineMode
+    internal interface IOperation
     {
-        private readonly Engine _engine;
-        private readonly Engine.Mode _mode;
-
-        public EngineMode(Engine engine, Engine.Mode mode)
-        {
-            _engine = engine;
-            _mode = mode;
-        }
-
-        public Engine Engine
-        {
-            get { return _engine; }
-        }
-
-        public Engine.Mode Mode
-        {
-            get { return _mode; }
-        }
+        Stack<double> Calculate(Stack<double> stack);
     }
 }

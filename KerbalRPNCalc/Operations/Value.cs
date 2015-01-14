@@ -1,4 +1,4 @@
-// This file is part of KerbalRPNCalc.
+﻿// This file is part of KerbalRPNCalc.
 // 
 // KerbalRPNCalc is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,10 +15,21 @@
 
 using System.Collections.Generic;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.Operations
 {
-    internal interface IOperation
+    internal class Value : IOperation
     {
-        Stack<double> Calculate(Stack<double> stack);
+        private readonly double _value;
+
+        public Value(double value)
+        {
+            _value = value;
+        }
+
+        public Stack<double> Calculate(Stack<double> stack)
+        {
+            stack.Push(_value);
+            return stack;
+        }
     }
 }

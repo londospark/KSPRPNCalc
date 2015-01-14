@@ -14,16 +14,16 @@
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Linq;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.Operations
 {
-    internal class DivideOperation : IOperation
+    internal class Add : IOperation
     {
         public Stack<double> Calculate(Stack<double> stack)
         {
-            var x = stack.Pop();
-            var y = stack.Pop();
-            stack.Push(y/x);
+            var operands = new[] {stack.Pop(), stack.Pop()};
+            stack.Push(operands.Sum());
             return stack;
         }
     }

@@ -1,4 +1,4 @@
-// This file is part of KerbalRPNCalc.
+﻿// This file is part of KerbalRPNCalc.
 // 
 // KerbalRPNCalc is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,17 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.Operations
 {
-    internal class LnOperation : IOperation
+    internal class Divide : IOperation
     {
         public Stack<double> Calculate(Stack<double> stack)
         {
-            var operand = stack.Pop();
-            stack.Push(Math.Log(operand));
+            var x = stack.Pop();
+            var y = stack.Pop();
+            stack.Push(y/x);
             return stack;
         }
     }

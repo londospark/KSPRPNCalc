@@ -13,35 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.PartsAPI
 {
-    internal class EngineModes : IEnumerable<EngineMode>
+    internal class EngineMode
     {
-        private readonly List<EngineMode> _engineModes;
+        private readonly Engine _engine;
+        private readonly Engine.Mode _mode;
 
-        public EngineModes() :
-            this(new EngineList())
+        public EngineMode(Engine engine, Engine.Mode mode)
         {
+            _engine = engine;
+            _mode = mode;
         }
 
-        public EngineModes(IEnumerable<Engine> engines)
+        public Engine Engine
         {
-            _engineModes = engines.OrderBy(x => x.Name)
-                .SelectMany(engine => engine.Modes, (engine, mode) => new EngineMode(engine, mode)).ToList();
+            get { return _engine; }
         }
 
-        public IEnumerator<EngineMode> GetEnumerator()
+        public Engine.Mode Mode
         {
-            return _engineModes.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            get { return _mode; }
         }
     }
 }

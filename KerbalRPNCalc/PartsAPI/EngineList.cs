@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.PartsAPI
 {
     internal class EngineList : IEnumerable<Engine>
     {

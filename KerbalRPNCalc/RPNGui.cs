@@ -14,6 +14,7 @@
 // along with KerbalRPNCalc. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using KerbalRPNCalc.Operations;
 using UnityEngine;
 
 namespace KerbalRPNCalc
@@ -89,7 +90,7 @@ namespace KerbalRPNCalc
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Engine Information", HighLogic.Skin.button))
             {
-                _engineSelector.Show(value => _calculatorViewModel.Operate(new ValueOperation(value)));
+                _engineSelector.Show(value => _calculatorViewModel.Operate(new Value(value)));
             }
             GUILayout.EndHorizontal();
         }
@@ -98,17 +99,18 @@ namespace KerbalRPNCalc
         {
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
-            OperationButton("ln", new LnOperation());
-            OperationButton("PI", new ValueOperation(Math.PI));
-            OperationButton("y^x", new PowerOperation());
-            OperationButton("SWAP", new SwapOperation());
+            OperationButton("ln", new Ln());
+            OperationButton("e^x", new Exp());
+            OperationButton("PI", new Value(Math.PI));
+            OperationButton("y^x", new Power());
+            OperationButton("SWAP", new Swap());
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            OperationButton("+", new AddOperation());
-            OperationButton("-", new SubtractOperation());
-            OperationButton("*", new MultiplyOperation());
-            OperationButton("/", new DivideOperation());
+            OperationButton("+", new Add());
+            OperationButton("-", new Subtract());
+            OperationButton("*", new Multiply());
+            OperationButton("/", new Divide());
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }

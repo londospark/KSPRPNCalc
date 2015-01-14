@@ -15,9 +15,9 @@
 
 using System.Collections.Generic;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.Operations
 {
-    internal class SwapOperation : IOperation
+    internal class Swap : IOperation
     {
         public Stack<double> Calculate(Stack<double> stack)
         {

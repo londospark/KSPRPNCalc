@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.PartsAPI
 {
     internal class EngineFactory
     {
@@ -47,17 +47,13 @@ namespace KerbalRPNCalc
                 .Where(e => e.engineID == engine.primaryEngineID || e.engineID == engine.secondaryEngineID);
 
             var builder = Engine.CreateEngineWithName(Part.FromGO(engine.gameObject).partInfo.title);
-            foreach (var engineMode in engines)
-            {
-                builder = builder.WithMode(mode =>
-                {
-                    mode.Name = Regex.Replace(engineMode.engineID, "([a-z])([A-Z])", "$1 $2");
-                    mode.SeaLevelISP = engineMode.atmosphereCurve.Evaluate(1.0f);
-                    mode.VacuumISP = engineMode.atmosphereCurve.Evaluate(0.0f);
-                });
-            }
 
-            return builder;
+            return engines.Aggregate(builder, (current, engineMode) => current.WithMode(mode =>
+            {
+                mode.Name = Regex.Replace(engineMode.engineID, "([a-z])([A-Z])", "$1 $2");
+                mode.SeaLevelISP = engineMode.atmosphereCurve.Evaluate(1.0f);
+                mode.VacuumISP = engineMode.atmosphereCurve.Evaluate(0.0f);
+            }));
         }
     }
 }

@@ -15,20 +15,15 @@
 
 using System.Collections.Generic;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.Operations
 {
-    internal class ValueOperation : IOperation
+    internal class SubtractOperation : IOperation
     {
-        private readonly double _value;
-
-        public ValueOperation(double value)
-        {
-            _value = value;
-        }
-
         public Stack<double> Calculate(Stack<double> stack)
         {
-            stack.Push(_value);
+            var x = stack.Pop();
+            var y = stack.Pop();
+            stack.Push(y - x);
             return stack;
         }
     }

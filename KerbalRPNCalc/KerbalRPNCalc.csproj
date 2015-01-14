@@ -41,24 +41,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOperation.cs" />
     <Compile Include="CalculatorViewModel.cs" />
-    <Compile Include="DivideOperation.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="EngineFactory.cs" />
     <Compile Include="EngineList.cs" />
     <Compile Include="EngineMode.cs" />
     <Compile Include="EngineModes.cs" />
     <Compile Include="EngineSelector.cs" />
-    <Compile Include="IOperation.cs" />
-    <Compile Include="LnOperation.cs" />
-    <Compile Include="MultiplyOperation.cs" />
-    <Compile Include="PowerOperation.cs" />
+    <Compile Include="Operations\AddOperation.cs" />
+    <Compile Include="Operations\DivideOperation.cs" />
+    <Compile Include="Operations\ExpOperation.cs" />
+    <Compile Include="Operations\IOperation.cs" />
+    <Compile Include="Operations\LnOperation.cs" />
+    <Compile Include="Operations\MultiplyOperation.cs" />
+    <Compile Include="Operations\PowerOperation.cs" />
+    <Compile Include="Operations\SubtractOperation.cs" />
+    <Compile Include="Operations\SwapOperation.cs" />
+    <Compile Include="Operations\ValueOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RPNGui.cs" />
-    <Compile Include="SubtractOperation.cs" />
-    <Compile Include="SwapOperation.cs" />
-    <Compile Include="ValueOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

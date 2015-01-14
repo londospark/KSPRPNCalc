@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace KerbalRPNCalc
+namespace KerbalRPNCalc.PartsAPI
 {
     internal class Engine
     {
