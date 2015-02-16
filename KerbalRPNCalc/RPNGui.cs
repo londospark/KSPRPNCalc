@@ -107,10 +107,10 @@ namespace KerbalRPNCalc
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            OperationButton("+", new Add());
-            OperationButton("-", new Subtract());
-            OperationButton("*", new Multiply());
-            OperationButton("/", new Divide());
+            OperationButton("+", '+', new Add());
+            OperationButton("-", '-', new Subtract());
+            OperationButton("*", '*', new Multiply());
+            OperationButton("/", '/', new Divide());
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
@@ -118,6 +118,15 @@ namespace KerbalRPNCalc
         private void OperationButton(string text, IOperation operation)
         {
             if (GUILayout.Button(text, HighLogic.Skin.button))
+            {
+                _calculatorViewModel.Operate(operation);
+            }
+        }
+
+        private void OperationButton(string text, char shortcut, IOperation operation)
+        {
+            if (GUILayout.Button(text, HighLogic.Skin.button) ||
+                (Event.current.character == shortcut && Event.current.type == EventType.KeyDown))
             {
                 _calculatorViewModel.Operate(operation);
             }
@@ -152,7 +161,8 @@ namespace KerbalRPNCalc
 
         private void DecimalButton()
         {
-            if (GUILayout.Button(".", HighLogic.Skin.button))
+            if (GUILayout.Button(".", HighLogic.Skin.button) ||
+                (Event.current.character == '.' && Event.current.type == EventType.KeyDown))
             {
                 _calculatorViewModel.DecimalPoint();
             }
@@ -160,7 +170,8 @@ namespace KerbalRPNCalc
 
         private void DigitButton(string digit)
         {
-            if (GUILayout.Button(digit, HighLogic.Skin.button))
+            if (GUILayout.Button(digit, HighLogic.Skin.button) ||
+                (Event.current.character == digit[0] && Event.current.type == EventType.KeyDown))
             {
                 _calculatorViewModel.Digit(digit[0]);
             }
@@ -168,7 +179,8 @@ namespace KerbalRPNCalc
 
         private void EnterButton()
         {
-            if (GUILayout.Button("ENTER", HighLogic.Skin.button))
+            if (GUILayout.Button("ENTER", HighLogic.Skin.button) ||
+                ((Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter) && Event.current.type == EventType.KeyDown))
             {
                 _calculatorViewModel.Enter();
             }
