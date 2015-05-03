@@ -19,27 +19,43 @@ using UnityEngine;
 
 namespace KerbalRPNCalc
 {
-    [KSPAddon(KSPAddon.Startup.EveryScene, false)]
+    [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class RPNGui : MonoBehaviour
     {
         private ApplicationLauncherButton _button;
-        private Rect _screenRect = new Rect(0, 0, 200, 0);
-        private bool _isVisible;
-        private readonly CalculatorViewModel _calculatorViewModel = new CalculatorViewModel();
         private EngineSelector _engineSelector;
+        private bool _isVisible;
+        private Rect _screenRect = new Rect(100, 100, 200, 0);
+        private readonly CalculatorViewModel _calculatorViewModel = new CalculatorViewModel();
 
-        public void Awake()
+        private void Start()
         {
+            if (_button == null)
+            {
+                AddButton();
+            }
+        }
+
+        private void Awake()
+        {
+            if (PlayerPrefs.HasKey("KSPCalc.Main.X") && PlayerPrefs.HasKey("KSPCalc.Main.Y"))
+            {
+                _screenRect.x = PlayerPrefs.GetFloat("KSPCalc.Main.X");
+                _screenRect.y = PlayerPrefs.GetFloat("KSPCalc.Main.Y");
+            }
             GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
             _engineSelector = gameObject.AddComponent<EngineSelector>();
         }
 
-        public void OnDestroy()
+        private void OnDestroy()
         {
+            PlayerPrefs.Save();
             GameEvents.onGUIApplicationLauncherReady.Remove(AddButton);
 
             if (_button != null)
+            {
                 ApplicationLauncher.Instance.RemoveModApplication(_button);
+            }
         }
 
         private void AddButton()
@@ -47,13 +63,20 @@ namespace KerbalRPNCalc
             if (_button == null)
             {
                 _button = ApplicationLauncher.Instance.AddModApplication(() => _isVisible = true,
-                    () => _isVisible = false, null, null, null,
+                    () =>
+                    {
+                        _isVisible = false;
+                        if (_engineSelector.Visible)
+                        {
+                            _engineSelector.Hide();
+                        }
+                    }, null, null, null,
                     null, ApplicationLauncher.AppScenes.ALWAYS,
                     GameDatabase.Instance.GetTexture("KerbalRPNCalc/Textures/Icon", false));
             }
         }
 
-        public void OnGUI()
+        private void OnGUI()
         {
             if (!_isVisible) return;
 
@@ -70,6 +93,9 @@ namespace KerbalRPNCalc
                 BuildNumPad();
                 GUI.DragWindow();
             }, "Kerbal RPN Calculator", HighLogic.Skin.window);
+
+            PlayerPrefs.SetFloat("KSPCalc.Main.X", _screenRect.x);
+            PlayerPrefs.SetFloat("KSPCalc.Main.Y", _screenRect.y);
         }
 
         private static string CalculatorDisplay(string label, string value)
@@ -90,7 +116,14 @@ namespace KerbalRPNCalc
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Engine Information", HighLogic.Skin.button))
             {
-                _engineSelector.Show(value => _calculatorViewModel.Operate(new Value(value)));
+                if (!_engineSelector.Visible)
+                {
+                    _engineSelector.Show(value => _calculatorViewModel.Operate(new Value(value)));
+                }
+                else
+                {
+                    _engineSelector.Hide();
+                }
             }
             GUILayout.EndHorizontal();
         }
@@ -180,7 +213,8 @@ namespace KerbalRPNCalc
         private void EnterButton()
         {
             if (GUILayout.Button("ENTER", HighLogic.Skin.button) ||
-                ((Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter) && Event.current.type == EventType.KeyDown))
+                ((Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter) &&
+                 Event.current.type == EventType.KeyDown))
             {
                 _calculatorViewModel.Enter();
             }

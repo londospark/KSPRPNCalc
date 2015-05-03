@@ -22,15 +22,26 @@ namespace KerbalRPNCalc
     [KSPAddon(KSPAddon.Startup.EveryScene, false)]
     internal class EngineSelector : MonoBehaviour
     {
-        private bool _visible = false;
-        private Rect _screenRect = new Rect(0, 0, 600, 350);
-        private readonly EngineModes _engineModes = new EngineModes();
         private Action<double> _callback;
+        private Rect _screenRect = new Rect(100, 100, 600, 350);
         private Vector2 _scrollPosition = new Vector2(0, 0);
+        private readonly EngineModes _engineModes = new EngineModes();
+
+        public EngineSelector()
+        {
+            if (PlayerPrefs.HasKey("KSPCalc.EngineSelector.X") && PlayerPrefs.HasKey("KSPCalc.EngineSelector.Y"))
+            {
+                _screenRect.x = PlayerPrefs.GetFloat("KSPCalc.EngineSelector.X");
+                _screenRect.y = PlayerPrefs.GetFloat("KSPCalc.EngineSelector.Y");
+            }
+            Visible = false;
+        }
+
+        public bool Visible { get; private set; }
 
         public void OnGUI()
         {
-            if (!_visible)
+            if (!Visible)
                 return;
 
             _screenRect = GUILayout.Window(GetInstanceID(), _screenRect, id =>
@@ -38,10 +49,11 @@ namespace KerbalRPNCalc
                 _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, HighLogic.Skin.scrollView);
                 GUILayout.BeginVertical();
 
-                foreach(var engineMode in _engineModes)
+                foreach (var engineMode in _engineModes)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(engineMode.Engine.Name + " " + engineMode.Mode.Name, HighLogic.Skin.label, GUILayout.ExpandWidth(true));
+                    GUILayout.Label(engineMode.Engine.Name + " " + engineMode.Mode.Name, HighLogic.Skin.label,
+                        GUILayout.ExpandWidth(true));
                     if (GUILayout.Button("Sea Level", HighLogic.Skin.button, GUILayout.Width(80.0f)))
                     {
                         _callback(engineMode.Mode.SeaLevelISP);
@@ -54,22 +66,27 @@ namespace KerbalRPNCalc
                     }
                     GUILayout.EndHorizontal();
                 }
-                    
+
                 GUILayout.EndVertical();
                 GUILayout.EndScrollView();
                 GUI.DragWindow();
+            
             }, "Engine Information Finderator", HighLogic.Skin.window);
+
+            PlayerPrefs.SetFloat("KSPCalc.EngineSelector.X", _screenRect.x);
+            PlayerPrefs.SetFloat("KSPCalc.EngineSelector.Y", _screenRect.y);
         }
 
         public void Show(Action<double> callback)
         {
             _callback = callback;
-            _visible = true;
+            Visible = true;
         }
 
         public void Hide()
         {
-            _visible = false;
+            Visible = false;
+            PlayerPrefs.Save();
         }
     }
 }
