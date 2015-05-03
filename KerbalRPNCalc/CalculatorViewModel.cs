@@ -15,19 +15,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using KerbalRPNCalc.Operations;
 
 namespace KerbalRPNCalc
 {
     internal class CalculatorViewModel
     {
-        public String T { get; set; }
-        public String Z { get; set; }
-        public String Y { get; set; }
-        public String X { get; set; }
-
-        private string _inputBuffer = "0";
         private bool _enterBeforeNextDigit;
+        private string _inputBuffer = "0";
 
         public CalculatorViewModel()
         {
@@ -37,6 +33,11 @@ namespace KerbalRPNCalc
             X = "0";
         }
 
+        public String T { get; set; }
+        public String Z { get; set; }
+        public String Y { get; set; }
+        public String X { get; set; }
+
         public void Digit(char digit)
         {
             if (_enterBeforeNextDigit)
@@ -45,7 +46,7 @@ namespace KerbalRPNCalc
                 _enterBeforeNextDigit = false;
             }
 
-            _inputBuffer = Double.Parse(_inputBuffer + digit).ToString();
+            _inputBuffer = Double.Parse(_inputBuffer + digit).ToString(CultureInfo.CurrentCulture);
             InputBufferToX();
         }
 
@@ -100,7 +101,7 @@ namespace KerbalRPNCalc
 
         private static String Pop(Stack<double> stack)
         {
-            return stack.Count > 0 ? stack.Pop().ToString() : "0";
+            return stack.Count > 0 ? stack.Pop().ToString(CultureInfo.CurrentCulture) : "0";
         }
 
         public void Operate(IOperation operation)
